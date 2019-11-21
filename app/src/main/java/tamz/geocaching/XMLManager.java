@@ -1,4 +1,4 @@
 package tamz.geocaching;
 
-public class Points {
+public class XMLManager {
 }
