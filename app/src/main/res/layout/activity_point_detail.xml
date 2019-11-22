@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/pointDetail_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/pointDetail_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="172dp"
+        android:elevation="4dp"
+        android:src="@drawable/success"
+        app:layout_constraintEnd_toEndOf="@+id/pointDetail_image"
+        app:layout_constraintStart_toStartOf="@+id/pointDetail_image"
+        app:layout_constraintTop_toTopOf="@+id/pointDetail_image" />
+
+    <TextView
+        android:id="@+id/pointDetail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointDetail_status" />
+
+    <TextView
+        android:id="@+id/pointDetail_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:text="TextView"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointDetail_coordinates" />
+
+    <Button
+        android:id="@+id/pointDetail_showOnMapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Show on map"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointDetail_description"
+        android:onClick="coordsResult"/>
+
+    <TextView
+        android:id="@+id/pointDetail_coordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/pointDetail_name"
+        app:layout_constraintStart_toStartOf="@+id/pointDetail_name"
+        app:layout_constraintTop_toBottomOf="@+id/pointDetail_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

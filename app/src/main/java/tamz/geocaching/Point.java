@@ -1,10 +1,14 @@
 package tamz.geocaching;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -48,6 +52,8 @@ public class Point extends Marker {
         //super.getIcon().setColorFilter(Color.MAGENTA, PorterDuff.Mode.MULTIPLY);
         super.setAnchor(0.176f, 0.176f);
         super.setInfoWindowAnchor(0.176f, 0.176f);
+
+
     }
 
     public void markAsVisited(){
@@ -69,6 +75,10 @@ public class Point extends Marker {
 
     public static List<Point> getAllPoints(){
         return PointsTableHelper.getInstance().getAllPoints();
+    }
+
+    public static Point getPointByCoordinates(double lat, double lon) {
+        return PointsTableHelper.getInstance().getPointByCoords(lat, lon);
     }
 
 
@@ -112,7 +122,21 @@ public class Point extends Marker {
         this.markerColor = markerColor;
     }
 
+    public String getCoordinatesString() {
+        StringBuilder result = new StringBuilder();
 
+        result.append(Math.abs(getPosition().getLatitude()));
+        result.append(getPosition().getLatitude() >= 0 ? "N " : "S ");
+        result.append(Math.abs(getPosition().getLongitude()));
+        result.append(getPosition().getLongitude() >= 0 ? "E" : "W");
 
+        return result.toString();
+    }
+
+    @Override
+    protected boolean onMarkerClickDefault(Marker marker, MapView mapView) {
+        MainActivity.instance.showPointDetail(this.getPosition().getLatitude(), this.getPosition().getLongitude());
+        return true;
+    }
 
 }

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/pointsListMenu_options"
+        android:title="Options"/>
+    <item android:id="@+id/pointsListMenu_importXML"
+        android:title="load points from XML"/>
+    <item android:id="@+id/pointsListMenu_exportXML"
+        android:title="save points to XML"/>
 
 </menu>

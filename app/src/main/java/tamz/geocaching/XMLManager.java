@@ -4,9 +4,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -26,9 +23,7 @@ public class XMLManager {
         File outputFile = new File(App.getContext().getExternalFilesDir(null), filename);
         List<Point> points = Point.getAllPoints();
 
-        //String photoURL
-
-        try (FileOutputStream out = new FileOutputStream(outputFile)) {
+        try {
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
@@ -79,16 +74,11 @@ public class XMLManager {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            //transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
             DOMSource source = new DOMSource(document);
             transformer.transform(source, new StreamResult(outputFile));
 
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
@@ -97,23 +87,8 @@ public class XMLManager {
         }
 
     }
+
+    public void importPointsFromFile(String filename) {
+
+    }
 }
-
-
-/*
-
-try {
-            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-            Document document = documentBuilder.newDocument();
-
-            Element root = document.createElement("point");
-            document.appendChild(root);
-
-
-
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-*/

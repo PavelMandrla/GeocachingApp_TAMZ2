@@ -104,7 +104,6 @@ public class PointsTableHelper extends SQLiteOpenHelper {
     }
 
     public List<Point> getAllPoints() {
-        Log.d("FUCK", "getAllPoints: ");
         double lat, lon;
         int visited;
         ArrayList<Point> result = new ArrayList<>();
@@ -122,7 +121,6 @@ public class PointsTableHelper extends SQLiteOpenHelper {
                 String color = c.getString(5);
                 String photo = c.getString(6);
 
-                Log.d("fuck", lat + " " + lon + " " + name + " " + desc + " " + color + " " + photo + " " + visited);
                 //double latitude, double longitude, String name, String description, String markerColor, int state, String photoURL
                 result.add(new Point(lat, lon, name, desc, color, visited, photo));
                 //result.add()
@@ -131,5 +129,29 @@ public class PointsTableHelper extends SQLiteOpenHelper {
         c.close();
         db.close();
         return result;
+    }
+
+    public Point getPointByCoords(double lat, double lon) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.d("COORDS", lat + " " + lon);
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL1 + " = ? AND " + COL2 + " = ?", new String[] {
+                Double.toString(lat),
+                Double.toString(lon)
+                });
+
+        if (!c.moveToFirst()) {
+            Log.d("FML", "FML, FML, FML");
+            return null;
+        }
+        double latitude = c.getDouble(0);
+        double longitude = c.getDouble(1);
+        int visited = c.getInt(2);
+        String name = c.getString(3);
+        String desc = c.getString(4);
+        String color = c.getString(5);
+        String photo = c.getString(6);
+        Log.d("POINT_INFO", latitude + " " + longitude + " " + name +" ");
+
+        return new Point(latitude, longitude, name, desc, color, visited, photo);
     }
 }
