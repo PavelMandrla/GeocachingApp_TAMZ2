@@ -123,6 +123,7 @@ public class PointsTableHelper extends SQLiteOpenHelper {
 
                 //double latitude, double longitude, String name, String description, String markerColor, int state, String photoURL
                 result.add(new Point(lat, lon, name, desc, color, visited, photo));
+                Log.d("FUCK", "getAllPoints: ");
                 //result.add()
             } while (c.moveToNext());
         }

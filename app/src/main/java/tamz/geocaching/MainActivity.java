@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         //new Point(49.8339, 18.1626, "Kruhovka", "Budova C v kampusu všb-tuo. Má v sobě nějaké posluchárny a mají tam výborné bagety. 10/10", "", 0, "https://upload.wikimedia.org/wikipedia/commons/f/f7/TU_Ostrava.JPG").insert();
 
         XMLManager xmlManager = new XMLManager();
-        xmlManager.exportPointsToFile("points_export2.xml");
+        //xmlManager.exportPointsToFile("points_export2.xml");
 
         Log.d("POINT", ((ArrayList<Point>) Point.getAllPoints()).size() + "");
 

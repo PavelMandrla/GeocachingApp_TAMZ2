@@ -2,15 +2,24 @@ package tamz.geocaching;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 public class PointListActivity extends Activity {
+
+    private static final int CREATE_FILE_REQUEST_CODE = 900;
+    private static final int CHOOSE_FILE_REQUEST_CODE = 901;
+    private static final int SHOW_POINT_DETAIL_REQUEST_CODE = 401;
 
     ListView pointsList;
 
@@ -28,8 +37,7 @@ public class PointListActivity extends Activity {
                 Intent pointDetailIntent = new Intent(getApplicationContext(), PointDetail.class);
                 pointDetailIntent.putExtra("latitude", point.getPosition().getLatitude());
                 pointDetailIntent.putExtra("longitude", point.getPosition().getLongitude());
-                //startActivityForResult(pointDetailIntent, 456);
-                startActivityForResult(pointDetailIntent, 401);
+                startActivityForResult(pointDetailIntent, SHOW_POINT_DETAIL_REQUEST_CODE);
             }
         });
     }
@@ -43,7 +51,55 @@ public class PointListActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        setResult(resultCode, data);
-        finish();
+        if (requestCode == CREATE_FILE_REQUEST_CODE) {
+            Uri uri = data.getData();
+            if (uri == null) {
+                Toast toast = Toast.makeText(App.getContext(), "Problem while saving file", Toast.LENGTH_LONG);
+                toast.show();
+            } else {
+                XMLManager.exportPointsToFile(uri);
+
+                Toast toast = Toast.makeText(App.getContext(), "Points saved to " + uri.getPath(), Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+        } else if (requestCode == CHOOSE_FILE_REQUEST_CODE) {
+            Uri uri = data.getData();
+            if (uri == null) {
+                Toast toast = Toast.makeText(App.getContext(), "Problem while opening file", Toast.LENGTH_LONG);
+                toast.show();
+            } else {
+                XMLManager.importPointsFromFile(uri);
+
+                Toast toast = Toast.makeText(App.getContext(), "Imported points from " + uri.getPath(), Toast.LENGTH_LONG);
+                toast.show();
+            }
+        } else if (requestCode == SHOW_POINT_DETAIL_REQUEST_CODE) {
+            //TODO -> make it nice
+            setResult(resultCode, data);
+            finish();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.pointsListMenu_options:
+                break;
+            case R.id.pointsListMenu_importXML:
+                Intent chooseFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                chooseFileIntent.setType("text/xml");
+                startActivityForResult(chooseFileIntent, CHOOSE_FILE_REQUEST_CODE);
+                break;
+            case R.id.pointsListMenu_exportXML:
+                Intent createFileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                createFileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                createFileIntent.setType("text/xml");
+                createFileIntent.putExtra(Intent.EXTRA_TITLE, "testFile.xml");
+                startActivityForResult(createFileIntent, CREATE_FILE_REQUEST_CODE);
+                break;
+        }
+        return true;
     }
 }

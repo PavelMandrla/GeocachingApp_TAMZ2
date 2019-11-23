@@ -138,5 +138,4 @@ public class Point extends Marker {
         MainActivity.instance.showPointDetail(this.getPosition().getLatitude(), this.getPosition().getLongitude());
         return true;
     }
-
 }
