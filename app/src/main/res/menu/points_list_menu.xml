@@ -6,5 +6,6 @@
         android:title="load points from XML"/>
     <item android:id="@+id/pointsListMenu_exportXML"
         android:title="save points to XML"/>
-
+    <item android:id="@+id/pointsListMenu_pointsDownload"
+        android:title="download points"/>
 </menu>

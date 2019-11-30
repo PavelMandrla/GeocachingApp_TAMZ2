@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,7 +50,7 @@ public class PointListActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_FILE_REQUEST_CODE) {
+        if (requestCode == CREATE_FILE_REQUEST_CODE && resultCode != 0) {
             Uri uri = data.getData();
             if (uri == null) {
                 Toast toast = Toast.makeText(App.getContext(), "Problem while saving file", Toast.LENGTH_LONG);
@@ -63,9 +62,10 @@ public class PointListActivity extends Activity {
                 toast.show();
             }
 
-        } else if (requestCode == CHOOSE_FILE_REQUEST_CODE) {
+        } else if (requestCode == CHOOSE_FILE_REQUEST_CODE && resultCode != 0) {
             Uri uri = data.getData();
             if (uri == null) {
+                pointsList.setAdapter(new PointAdapter(App.getContext(), R.layout.list_point_layout, Point.getAllPoints()));
                 Toast toast = Toast.makeText(App.getContext(), "Problem while opening file", Toast.LENGTH_LONG);
                 toast.show();
             } else {
@@ -74,8 +74,7 @@ public class PointListActivity extends Activity {
                 Toast toast = Toast.makeText(App.getContext(), "Imported points from " + uri.getPath(), Toast.LENGTH_LONG);
                 toast.show();
             }
-        } else if (requestCode == SHOW_POINT_DETAIL_REQUEST_CODE) {
-            //TODO -> make it nice
+        } else if (requestCode == SHOW_POINT_DETAIL_REQUEST_CODE && resultCode != 0) {
             setResult(resultCode, data);
             finish();
         }
@@ -85,6 +84,7 @@ public class PointListActivity extends Activity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.pointsListMenu_options:
+
                 break;
             case R.id.pointsListMenu_importXML:
                 Intent chooseFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -98,6 +98,10 @@ public class PointListActivity extends Activity {
                 createFileIntent.setType("text/xml");
                 createFileIntent.putExtra(Intent.EXTRA_TITLE, "testFile.xml");
                 startActivityForResult(createFileIntent, CREATE_FILE_REQUEST_CODE);
+                break;
+            case R.id.pointsListMenu_pointsDownload:
+                Intent downloadPointsIntent = new Intent(getApplicationContext(), PointDownloader.class);
+                startActivity(downloadPointsIntent);
                 break;
         }
         return true;

@@ -2,6 +2,7 @@ package tamz.geocaching;
 
 import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -89,7 +91,6 @@ public class XMLManager {
     }
 
     public static void importPointsFromFile(Uri uri) {
-
         try (InputStream is = App.getContext().getContentResolver().openInputStream(uri)) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -118,5 +119,28 @@ public class XMLManager {
             Log.d("FFFFFFF", "importPointsFromFile: ");
             e.printStackTrace();
         }
+    }
+
+    public static List<PointsFile> getPointsFilesFromInputStream(InputStream is) {
+        List<PointsFile> result = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document document = builder.parse(is);
+            Element root = document.getDocumentElement();
+
+            NodeList pointsFiles = root.getElementsByTagName("pointsFile");
+            for (int i = 0; i < pointsFiles.getLength(); i++) {
+                Node pointsFileNode = pointsFiles.item(i);
+
+                String name = ((Element) pointsFileNode).getElementsByTagName("name").item(0).getTextContent();
+                String fileURL = ((Element) pointsFileNode).getElementsByTagName("url").item(0).getTextContent();
+                result.add(new PointsFile(name, fileURL));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
         map = (MapView) findViewById(R.id.map);
         context = getApplicationContext();
         map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setMultiTouchControls(true);
 
         button = (Button) findViewById(R.id.button3);
         instance = this;
@@ -41,18 +42,14 @@ public class MainActivity extends Activity {
 
         Point p = new Point(49.831, 18.161, "name", "", "", 1, "");
 
-        //new Point(49.831, 18.161, "FEI", "Fakulta elektrotechniky a informatiky", "", 0, "").insert();
-        //new Point(49.833, 18.161, "CPIT", "Centrum pokročilých inovačních technologií", "", 0, "").insert();
-        //new Point(49.833, 18.164, "Rektorát VŠB-TUO", "Rektorát Vysoké školy báňské - Technické univerzity Ostrava", "", 0, "").insert();
-        //new Point(49.8339, 18.1626, "Kruhovka", "Budova C v kampusu všb-tuo. Má v sobě nějaké posluchárny a mají tam výborné bagety. 10/10", "", 0, "https://upload.wikimedia.org/wikipedia/commons/f/f7/TU_Ostrava.JPG").insert();
-
         XMLManager xmlManager = new XMLManager();
-        //xmlManager.exportPointsToFile("points_export2.xml");
 
         Log.d("POINT", ((ArrayList<Point>) Point.getAllPoints()).size() + "");
 
         map.getOverlays().addAll(Point.getAllPoints());
         map.invalidate();
+
+
 
         map.getController().setZoom(15.0);
         map.getController().setCenter(p.getPosition());
