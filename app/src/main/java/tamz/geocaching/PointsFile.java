@@ -16,4 +16,5 @@ public class PointsFile {
     public String getUrl() {
         return url;
     }
+
 }

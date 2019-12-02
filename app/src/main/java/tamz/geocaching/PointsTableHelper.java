@@ -60,6 +60,7 @@ public class PointsTableHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertPoint(Point point) {
+        Log.d("INSERTING NEW POINT", "insertPoint: ");
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

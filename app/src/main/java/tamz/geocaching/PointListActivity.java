@@ -19,6 +19,7 @@ public class PointListActivity extends Activity {
     private static final int CREATE_FILE_REQUEST_CODE = 900;
     private static final int CHOOSE_FILE_REQUEST_CODE = 901;
     private static final int SHOW_POINT_DETAIL_REQUEST_CODE = 401;
+    private static final int DOWNLOAD_POINTS_REQUEST_CODE = 402;
 
     ListView pointsList;
 
@@ -78,6 +79,10 @@ public class PointListActivity extends Activity {
             setResult(resultCode, data);
             finish();
         }
+
+        //TODO -> otestovat, zda to funguje
+        ((PointAdapter)pointsList.getAdapter()).setData(Point.getAllPoints());
+        ((PointAdapter)pointsList.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -101,7 +106,7 @@ public class PointListActivity extends Activity {
                 break;
             case R.id.pointsListMenu_pointsDownload:
                 Intent downloadPointsIntent = new Intent(getApplicationContext(), PointDownloader.class);
-                startActivity(downloadPointsIntent);
+                startActivityForResult(downloadPointsIntent, DOWNLOAD_POINTS_REQUEST_CODE);
                 break;
         }
         return true;

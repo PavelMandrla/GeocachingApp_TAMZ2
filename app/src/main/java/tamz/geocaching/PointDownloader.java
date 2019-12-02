@@ -3,7 +3,10 @@ package tamz.geocaching;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,17 +15,19 @@ import java.net.URL;
 import java.util.List;
 
 public class PointDownloader extends Activity {
+    private ListView filesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new PointsFilesXMLDownloader().execute("http://192.168.0.18/pointFiles.xml");
+        filesList = findViewById(R.id.ListView_files);
+
+        new PointsFilesXMLDownloader().execute("http://10.102.56.197/pointFiles.xml");//TODO zmenit IP adresu
     }
 
     private class PointsFilesXMLDownloader extends AsyncTask<String, Void, List<PointsFile>> {
         @Override
         protected List<PointsFile> doInBackground(String ... urls) {
-            Log.d("TATATATA", "doInBackground: ");
             List<PointsFile> result = null;
             InputStream is;
             try {
@@ -41,15 +46,50 @@ public class PointDownloader extends Activity {
         @Override
         protected void onPostExecute(List<PointsFile> pointsFiles) {
             setContentView(R.layout.activity_point_downloader);
+            filesList = findViewById(R.id.ListView_files);
+            filesList.setAdapter(new PointsFileAdapter(getApplicationContext(), R.layout.list_pointsfile_layout, pointsFiles));
+            filesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    PointsFile pointsFile =(PointsFile) parent.getItemAtPosition(position);
+                    new PointsXMLDownloader().execute(pointsFile.getUrl());
+                }
+            });
+        }
+    }
+
+    private class PointsXMLDownloader extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            InputStream is;
+            try {
+                is = getUrlInputStream(strings[0]);
+                XMLManager.importPointsFromInputStream(is);
+
+                if (is != null) {
+                    is.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
-        private InputStream getUrlInputStream(String urlString) throws IOException {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.connect();
-            return conn.getInputStream();
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Toast toast = Toast.makeText(getApplicationContext(), "collection downloaded", Toast.LENGTH_LONG);
+            toast.show();
         }
+    }
+
+    private InputStream getUrlInputStream(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.connect();
+        return conn.getInputStream();
     }
 
 
 }
+
+

@@ -2,13 +2,14 @@ package tamz.geocaching;
 
 import android.net.Uri;
 import android.util.Log;
-import android.util.Pair;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -92,31 +93,8 @@ public class XMLManager {
 
     public static void importPointsFromFile(Uri uri) {
         try (InputStream is = App.getContext().getContentResolver().openInputStream(uri)) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            Document document = builder.parse(is);
-            Element root = document.getDocumentElement();
-
-            NodeList points = root.getElementsByTagName("point");
-            for (int i = 0; i < points.getLength(); i++) {
-                Node pointNode = points.item(i);
-
-                Element coorinates = (Element) ((Element) pointNode).getElementsByTagName("coordinates").item(0);
-                double lat = Double.parseDouble(coorinates.getElementsByTagName("latitude").item(0).getTextContent());
-                double lon = Double.parseDouble(coorinates.getElementsByTagName("longitude").item(0).getTextContent());
-
-                String name = ((Element) pointNode).getElementsByTagName("name").item(0).getTextContent();
-                String description = ((Element) pointNode).getElementsByTagName("description").item(0).getTextContent();
-                String markerColor = ((Element) pointNode).getElementsByTagName("marker_color").item(0).getTextContent();
-                String photoUrl = ((Element) pointNode).getElementsByTagName("photo_URL").item(0).getTextContent();
-                boolean visited = Boolean.parseBoolean(((Element) pointNode).getElementsByTagName("visited").item(0).getTextContent());
-
-                new Point(lat, lon, name, description, markerColor, visited ? 1 : 0, photoUrl).insert();
-            }
-
+            importPointsFromInputStream(is);
         } catch (Exception e) {
-            Log.d("FFFFFFF", "importPointsFromFile: ");
             e.printStackTrace();
         }
     }
@@ -142,5 +120,30 @@ public class XMLManager {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void importPointsFromInputStream(InputStream is) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        Document document = builder.parse(is);
+        Element root = document.getDocumentElement();
+
+        NodeList points = root.getElementsByTagName("point");
+        for (int i = 0; i < points.getLength(); i++) {
+            Node pointNode = points.item(i);
+
+            Element coorinates = (Element) ((Element) pointNode).getElementsByTagName("coordinates").item(0);
+            double lat = Double.parseDouble(coorinates.getElementsByTagName("latitude").item(0).getTextContent());
+            double lon = Double.parseDouble(coorinates.getElementsByTagName("longitude").item(0).getTextContent());
+
+            String name = ((Element) pointNode).getElementsByTagName("name").item(0).getTextContent();
+            String description = ((Element) pointNode).getElementsByTagName("description").item(0).getTextContent();
+            String markerColor = ((Element) pointNode).getElementsByTagName("marker_color").item(0).getTextContent();
+            String photoUrl = ((Element) pointNode).getElementsByTagName("photo_URL").item(0).getTextContent();
+            boolean visited = Boolean.parseBoolean(((Element) pointNode).getElementsByTagName("visited").item(0).getTextContent());
+
+            new Point(lat, lon, name, description, markerColor, visited ? 1 : 0, photoUrl).insert();
+        }
     }
 }

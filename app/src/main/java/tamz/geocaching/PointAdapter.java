@@ -57,4 +57,12 @@ public class PointAdapter extends ArrayAdapter<Point> {
         TextView coordinates;
         ImageView status;
     }
+
+    public List<Point> getData() {
+        return data;
+    }
+
+    public void setData(List<Point> data) {
+        this.data = data;
+    }
 }

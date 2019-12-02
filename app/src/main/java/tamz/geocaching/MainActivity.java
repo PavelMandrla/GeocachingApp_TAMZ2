@@ -74,6 +74,9 @@ public class MainActivity extends Activity {
             map.getController().setCenter(new GeoPoint(lat, lon));
             map.getController().setZoom(20.0);
         }
+        //TODO -> zkontrolovat, zda to fakt prekresli pointy na mape
+        map.getOverlays().addAll(Point.getAllPoints());
+        map.invalidate();
     }
 
     public void showPointsList(View view) {
