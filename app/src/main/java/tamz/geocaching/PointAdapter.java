@@ -30,7 +30,7 @@ public class PointAdapter extends ArrayAdapter<Point> {
         PointHolder holder;
 
         if (row == null) {
-            LayoutInflater inflater = (LayoutInflater) App.getContext().getSystemService(App.getContext().LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) MainActivity.instance.getApplicationContext().getSystemService(MainActivity.instance.getApplicationContext().LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new PointHolder();

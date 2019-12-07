@@ -28,7 +28,7 @@ public class PointListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_point_list);
         pointsList = findViewById(R.id.ListView_points);
-        pointsList.setAdapter(new PointAdapter(App.getContext(), R.layout.list_point_layout, Point.getAllPoints()));
+        pointsList.setAdapter(new PointAdapter(getApplicationContext(), R.layout.list_point_layout, Point.getAllPoints()));
 
         pointsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -54,25 +54,25 @@ public class PointListActivity extends Activity {
         if (requestCode == CREATE_FILE_REQUEST_CODE && resultCode != 0) {
             Uri uri = data.getData();
             if (uri == null) {
-                Toast toast = Toast.makeText(App.getContext(), "Problem while saving file", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), "Problem while saving file", Toast.LENGTH_LONG);
                 toast.show();
             } else {
                 XMLManager.exportPointsToFile(uri);
 
-                Toast toast = Toast.makeText(App.getContext(), "Points saved to " + uri.getPath(), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), "Points saved to " + uri.getPath(), Toast.LENGTH_LONG);
                 toast.show();
             }
 
         } else if (requestCode == CHOOSE_FILE_REQUEST_CODE && resultCode != 0) {
             Uri uri = data.getData();
             if (uri == null) {
-                pointsList.setAdapter(new PointAdapter(App.getContext(), R.layout.list_point_layout, Point.getAllPoints()));
-                Toast toast = Toast.makeText(App.getContext(), "Problem while opening file", Toast.LENGTH_LONG);
+                pointsList.setAdapter(new PointAdapter(getApplicationContext(), R.layout.list_point_layout, Point.getAllPoints()));
+                Toast toast = Toast.makeText(getApplicationContext(), "Problem while opening file", Toast.LENGTH_LONG);
                 toast.show();
             } else {
                 XMLManager.importPointsFromFile(uri);
 
-                Toast toast = Toast.makeText(App.getContext(), "Imported points from " + uri.getPath(), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), "Imported points from " + uri.getPath(), Toast.LENGTH_LONG);
                 toast.show();
             }
         } else if (requestCode == SHOW_POINT_DETAIL_REQUEST_CODE && resultCode != 0) {
@@ -80,17 +80,11 @@ public class PointListActivity extends Activity {
             finish();
         }
 
-        //TODO -> otestovat, zda to funguje
-        ((PointAdapter)pointsList.getAdapter()).setData(Point.getAllPoints());
-        ((PointAdapter)pointsList.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.pointsListMenu_options:
-
-                break;
             case R.id.pointsListMenu_importXML:
                 Intent chooseFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 chooseFileIntent.addCategory(Intent.CATEGORY_OPENABLE);

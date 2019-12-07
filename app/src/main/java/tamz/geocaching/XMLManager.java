@@ -27,9 +27,9 @@ import javax.xml.transform.stream.StreamResult;
 
 public class XMLManager {
     public static void exportPointsToFile(Uri uri) {
-        List<Point> points = Point.getAllPoints();
+        List<Point> points = Point.getVisitedPoints();
 
-        try (OutputStream os = App.getContext().getContentResolver().openOutputStream(uri)){
+        try (OutputStream os = MainActivity.instance.getApplicationContext().getContentResolver().openOutputStream(uri)){
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
@@ -92,7 +92,7 @@ public class XMLManager {
     }
 
     public static void importPointsFromFile(Uri uri) {
-        try (InputStream is = App.getContext().getContentResolver().openInputStream(uri)) {
+        try (InputStream is = MainActivity.instance.getApplicationContext().getContentResolver().openInputStream(uri)) {
             importPointsFromInputStream(is);
         } catch (Exception e) {
             e.printStackTrace();

@@ -30,7 +30,7 @@ public class PointsFileAdapter extends ArrayAdapter<PointsFile> {
         PointsFileHolder holder = null;
 
         if (row == null) {
-            LayoutInflater inflater = (LayoutInflater) App.getContext().getSystemService(App.getContext().LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) MainActivity.instance.getApplicationContext().getSystemService(MainActivity.instance.getApplicationContext().LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new PointsFileHolder();

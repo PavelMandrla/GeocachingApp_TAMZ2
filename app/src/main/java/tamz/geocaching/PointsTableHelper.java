@@ -34,7 +34,7 @@ public class PointsTableHelper extends SQLiteOpenHelper {
     }
 
     private PointsTableHelper() {
-        super(App.getContext(), TABLE_NAME, null, VERSION);
+        super(MainActivity.instance.getApplicationContext(), TABLE_NAME, null, VERSION);
     }
 
     @Override
@@ -111,6 +111,35 @@ public class PointsTableHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        if (c.moveToFirst()) {
+            do {
+                lat = c.getDouble(0);
+                lon = c.getDouble(1);
+                visited = c.getInt(2);
+
+                String name = c.getString(3);
+                String desc = c.getString(4);
+                String color = c.getString(5);
+                String photo = c.getString(6);
+
+                //double latitude, double longitude, String name, String description, String markerColor, int state, String photoURL
+                result.add(new Point(lat, lon, name, desc, color, visited, photo));
+                Log.d("FUCK", "getAllPoints: ");
+                //result.add()
+            } while (c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return result;
+    }
+
+    public List<Point> getVisitedPoints() {
+        double lat, lon;
+        int visited;
+        ArrayList<Point> result = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL3 + " != 0", null);
         if (c.moveToFirst()) {
             do {
                 lat = c.getDouble(0);

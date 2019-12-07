@@ -22,7 +22,7 @@ public class PointDownloader extends Activity {
         super.onCreate(savedInstanceState);
         filesList = findViewById(R.id.ListView_files);
 
-        new PointsFilesXMLDownloader().execute("http://10.102.56.197/pointFiles.xml");//TODO zmenit IP adresu
+        new PointsFilesXMLDownloader().execute("http://192.168.1.61/pointFiles.xml");//TODO zmenit IP adresu
     }
 
     private class PointsFilesXMLDownloader extends AsyncTask<String, Void, List<PointsFile>> {

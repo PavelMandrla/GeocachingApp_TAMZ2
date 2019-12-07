@@ -1,29 +1,42 @@
 package tamz.geocaching;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.core.content.ContextCompat;
+
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.util.ArrayList;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+
 
 public class MainActivity extends Activity {
-    // use -> FUSED LOCATION PROVIDER
+    public static final double maxDistance = 50;
+
     public static MapView map = null;
     public static Context context = null;
     public static MainActivity instance = null;
+    GpsMyLocationProvider locationProvider = null;
     Button button = null;
+    private int REQUEST_LOCATION_CODE = 10;
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Context ctx = getApplicationContext();
@@ -39,29 +52,35 @@ public class MainActivity extends Activity {
         button = (Button) findViewById(R.id.button3);
         instance = this;
 
+        checkPermissions();
 
-        Point p = new Point(49.831, 18.161, "name", "", "", 1, "");
+        locationProvider = new GpsMyLocationProvider(ctx);
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(locationProvider, map);
+        locationOverlay.setDrawAccuracyEnabled(false);
 
-        XMLManager xmlManager = new XMLManager();
-
-        Log.d("POINT", ((ArrayList<Point>) Point.getAllPoints()).size() + "");
-
+        map.getOverlays().add(locationOverlay);
         map.getOverlays().addAll(Point.getAllPoints());
         map.invalidate();
 
-
-
         map.getController().setZoom(15.0);
-        map.getController().setCenter(p.getPosition());
 
+        GeoPoint centre;
+        Location last = locationProvider.getLastKnownLocation();
+        if (last != null) {
+            centre = new GeoPoint(last.getLatitude(), last.getLongitude());
+        } else {
+            centre = new GeoPoint(49.831, 18.161);
+        }
+
+        map.getController().setCenter(centre);
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -91,4 +110,14 @@ public class MainActivity extends Activity {
         startActivityForResult(pointDetailIntent, 401);
     }
 
+    public Location getLocation() {
+        return this.locationProvider.getLastKnownLocation();
+    }
+
+    public void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
+        }
+    }
 }

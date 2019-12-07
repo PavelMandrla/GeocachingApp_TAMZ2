@@ -1,27 +1,15 @@
 package tamz.geocaching;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
+import android.location.Location;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.osmdroid.views.overlay.Polygon;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 public class Point extends Marker {
 
@@ -47,12 +35,15 @@ public class Point extends Marker {
         this.markerColor = markerColor == null ? "" : markerColor;
 
         super.setPosition(new GeoPoint(latitude, longitude));
-        super.setIcon(App.getContext().getDrawable(R.drawable.lunar_module2));
-        //super.setIcon(App.getContext().getDrawable(R.drawable.target));
-        //super.getIcon().setColorFilter(Color.MAGENTA, PorterDuff.Mode.MULTIPLY);
+        super.setIcon(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.lunar_module2));
         super.setAnchor(0.176f, 0.176f);
         super.setInfoWindowAnchor(0.176f, 0.176f);
 
+        List<GeoPoint> circle = Polygon.pointsAsCircle(this.getPosition(), MainActivity.maxDistance);
+        Polygon p = new Polygon(MainActivity.map);
+        p.setPoints(circle);
+        MainActivity.map.getOverlayManager().add(p);
+        //mapView.invalidate();
 
     }
 
@@ -61,6 +52,25 @@ public class Point extends Marker {
         this.update();
     }
 
+
+    public double haversine(double lat, double lon) {
+        final int R = 6371000; // Radious of the earth
+        Double lat1 = lat;
+        Double lon1 = lon;
+        Double lat2 = this.getPosition().getLatitude();
+        Double lon2 = this.getPosition().getLongitude();
+        Double latDistance = toRad(lat2-lat1);
+        Double lonDistance = toRad(lon2-lon1);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        Double distance = R * c;
+        return distance;
+    }
+    private static Double toRad(Double value) {
+        return value * Math.PI / 180;
+    }
 
 
     public boolean insert() {
@@ -75,6 +85,10 @@ public class Point extends Marker {
 
     public static List<Point> getAllPoints(){
         return PointsTableHelper.getInstance().getAllPoints();
+    }
+
+    public static List<Point> getVisitedPoints(){
+        return PointsTableHelper.getInstance().getVisitedPoints();
     }
 
     public static Point getPointByCoordinates(double lat, double lon) {
@@ -137,5 +151,10 @@ public class Point extends Marker {
     protected boolean onMarkerClickDefault(Marker marker, MapView mapView) {
         MainActivity.instance.showPointDetail(this.getPosition().getLatitude(), this.getPosition().getLongitude());
         return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
+        return super.onTouchEvent(event, mapView);
     }
 }
