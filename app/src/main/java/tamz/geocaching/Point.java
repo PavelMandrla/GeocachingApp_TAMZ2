@@ -1,8 +1,8 @@
 package tamz.geocaching;
 
-import android.location.Location;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -35,16 +35,25 @@ public class Point extends Marker {
         this.markerColor = markerColor == null ? "" : markerColor;
 
         super.setPosition(new GeoPoint(latitude, longitude));
-        super.setIcon(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.lunar_module2));
+        if (visited) {
+            super.setIcon(resize(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.visited)));
+        } else {
+            super.setIcon(resize(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.notvisited)));
+        }
         super.setAnchor(0.176f, 0.176f);
-        super.setInfoWindowAnchor(0.176f, 0.176f);
 
         List<GeoPoint> circle = Polygon.pointsAsCircle(this.getPosition(), MainActivity.maxDistance);
         Polygon p = new Polygon(MainActivity.map);
+        p.setInfoWindow(null);
         p.setPoints(circle);
         MainActivity.map.getOverlayManager().add(p);
-        //mapView.invalidate();
 
+    }
+
+    private Drawable resize(Drawable image) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 100, 100, false);
+        return new BitmapDrawable(MainActivity.instance.getResources(), bitmapResized);
     }
 
     public void markAsVisited(){
@@ -153,8 +162,4 @@ public class Point extends Marker {
         return true;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-        return super.onTouchEvent(event, mapView);
-    }
 }

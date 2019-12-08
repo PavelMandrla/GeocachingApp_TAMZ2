@@ -52,13 +52,13 @@ public class PointDetail extends Activity {
             public boolean onLongClick(View v) {
                 if (point.isVisited()) {
                     playSound(R.raw.decline);
-                    vibrate(1000);
+                    vibrate(500);
                     return false;
                 }
                 Location last = MainActivity.instance.getLocation();
                 if (last == null) {
                     playSound(R.raw.decline);
-                    vibrate(100);
+                    vibrate(500);
                     return false;
                 }
                 if (point.haversine(last.getLatitude(), last.getLongitude()) > MainActivity.maxDistance) {

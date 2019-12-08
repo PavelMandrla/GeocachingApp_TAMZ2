@@ -34,7 +34,7 @@ public class PointsTableHelper extends SQLiteOpenHelper {
     }
 
     private PointsTableHelper() {
-        super(App.getInstance().getApplicationContext(), TABLE_NAME, null, VERSION);
+        super(MainActivity.instance.getApplicationContext(), TABLE_NAME, null, VERSION);
     }
 
     @Override

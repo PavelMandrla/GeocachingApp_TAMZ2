@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -47,7 +50,6 @@ public class MainActivity extends Activity {
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
 
-        button = (Button) findViewById(R.id.button3);
         instance = this;
 
         checkPermissions();
@@ -115,6 +117,22 @@ public class MainActivity extends Activity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE);
+        }
+    }
+
+    public void goToCurrentLocation(View view) {
+        Location last = locationProvider.getLastKnownLocation();
+        if (last != null) {
+            //map.getController().setCenter(new GeoPoint(last.getLatitude(), last.getLongitude()));
+            map.getController().animateTo(new GeoPoint(last.getLatitude(), last.getLongitude()));
+        } else {
+            Vibrator vibrator = (Vibrator) getSystemService(getApplicationContext().VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(50, 255));
+            } else {
+                //deprecated in API 26
+                vibrator.vibrate(50);
+            }
         }
     }
 }
