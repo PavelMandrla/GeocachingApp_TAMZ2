@@ -34,7 +34,7 @@ public class PointsTableHelper extends SQLiteOpenHelper {
     }
 
     private PointsTableHelper() {
-        super(MainActivity.instance.getApplicationContext(), TABLE_NAME, null, VERSION);
+        super(App.getInstance().getApplicationContext(), TABLE_NAME, null, VERSION);
     }
 
     @Override
@@ -72,13 +72,14 @@ public class PointsTableHelper extends SQLiteOpenHelper {
         values.put(COL6, point.getMarkerColor());
         values.put(COL7, point.getPhotoURL());
 
-        db.insert(TABLE_NAME, null, values);
+        if (db.insert(TABLE_NAME, null, values) == -1 && point.isVisited()) {
+            getPointByCoords(point.getPosition().getLatitude(), point.getPosition().getLongitude()).markAsVisited();
+        }
         db.close();
         return true;
     }
 
     public boolean updatePoint(Point point) {
-        //TODO -> test
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

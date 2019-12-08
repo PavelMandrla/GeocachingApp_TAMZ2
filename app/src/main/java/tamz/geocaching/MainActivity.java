@@ -22,9 +22,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-
-
 public class MainActivity extends Activity {
     public static final double maxDistance = 50;
 
@@ -37,6 +34,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         Context ctx = getApplicationContext();
@@ -93,7 +91,6 @@ public class MainActivity extends Activity {
             map.getController().setCenter(new GeoPoint(lat, lon));
             map.getController().setZoom(20.0);
         }
-        //TODO -> zkontrolovat, zda to fakt prekresli pointy na mape
         map.getOverlays().addAll(Point.getAllPoints());
         map.invalidate();
     }

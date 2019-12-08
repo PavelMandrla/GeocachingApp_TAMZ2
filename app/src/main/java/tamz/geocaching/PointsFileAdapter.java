@@ -1,6 +1,7 @@
 package tamz.geocaching;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PointsFileAdapter extends ArrayAdapter<PointsFile> {
     private int layoutResourceId;
     private List<PointsFile> data;
+    private SharedPreferences preferences = MainActivity.instance.getApplicationContext().getSharedPreferences("pointFiles", 0);
 
     public PointsFileAdapter(@NonNull Context context, int resource, @NonNull List<PointsFile> objects) {
         super(context, resource, objects);
@@ -44,10 +46,26 @@ public class PointsFileAdapter extends ArrayAdapter<PointsFile> {
         holder.name.setText(pointsFile.getName());
 
         //TODO -> nastavit obrazek a mozna i disabled na pole, pokud je uz kolekce bodu stazena
-        holder.downloadedStatus.setImageResource(R.drawable.success);
+
+
+        if (preferences.getString(pointsFile.getName(), null) != null) {
+            //holder.downloadedStatus.setImageResource(R.drawable.cancel);
+        } else {
+            holder.downloadedStatus.setImageResource(R.drawable.download);
+        }
 
         return row;
     }
+
+    @Override
+    public boolean isEnabled(int position) {
+        if (preferences.getString(data.get(position).getName(), null) != null) {
+            return false;
+        }
+        return true;
+    }
+
+
 
     class PointsFileHolder {
         TextView name;

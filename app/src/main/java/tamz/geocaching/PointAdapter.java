@@ -65,4 +65,5 @@ public class PointAdapter extends ArrayAdapter<Point> {
     public void setData(List<Point> data) {
         this.data = data;
     }
+
 }

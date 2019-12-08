@@ -1,6 +1,7 @@
 package tamz.geocaching;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class PointDownloader extends Activity {
     private ListView filesList;
+    private PointsFileAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +49,18 @@ public class PointDownloader extends Activity {
         protected void onPostExecute(List<PointsFile> pointsFiles) {
             setContentView(R.layout.activity_point_downloader);
             filesList = findViewById(R.id.ListView_files);
-            filesList.setAdapter(new PointsFileAdapter(getApplicationContext(), R.layout.list_pointsfile_layout, pointsFiles));
+            adapter = new PointsFileAdapter(getApplicationContext(), R.layout.list_pointsfile_layout, pointsFiles);
+            filesList.setAdapter(adapter);
             filesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    filesList.getChildAt(position).setEnabled(false);
                     PointsFile pointsFile =(PointsFile) parent.getItemAtPosition(position);
                     new PointsXMLDownloader().execute(pointsFile.getUrl());
+                    SharedPreferences preferences = MainActivity.instance.getApplicationContext().getSharedPreferences("pointFiles", 0);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(pointsFile.getName(), pointsFile.getName());
+                    editor.commit();
                 }
             });
         }
@@ -79,6 +87,7 @@ public class PointDownloader extends Activity {
         protected void onPostExecute(Void aVoid) {
             Toast toast = Toast.makeText(getApplicationContext(), "collection downloaded", Toast.LENGTH_LONG);
             toast.show();
+            finish();
         }
     }
 
@@ -88,8 +97,4 @@ public class PointDownloader extends Activity {
         conn.connect();
         return conn.getInputStream();
     }
-
-
 }
-
-

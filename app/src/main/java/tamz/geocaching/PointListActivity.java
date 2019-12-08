@@ -28,6 +28,7 @@ public class PointListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_point_list);
         pointsList = findViewById(R.id.ListView_points);
+
         pointsList.setAdapter(new PointAdapter(getApplicationContext(), R.layout.list_point_layout, Point.getAllPoints()));
 
         pointsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,6 +80,10 @@ public class PointListActivity extends Activity {
             setResult(resultCode, data);
             finish();
         }
+        ((PointAdapter)pointsList.getAdapter()).clear();
+        ((PointAdapter)pointsList.getAdapter()).addAll(Point.getAllPoints());
+        ((PointAdapter)pointsList.getAdapter()).notifyDataSetChanged();
+
 
     }
 
