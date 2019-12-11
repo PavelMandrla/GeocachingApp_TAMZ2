@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
     public static Context context = null;
     public static MainActivity instance = null;
     GpsMyLocationProvider locationProvider = null;
+    MyLocationNewOverlay locationOverlay;
     Button button = null;
     private int REQUEST_LOCATION_CODE = 10;
 
@@ -55,11 +56,12 @@ public class MainActivity extends Activity {
         checkPermissions();
 
         locationProvider = new GpsMyLocationProvider(ctx);
-        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(locationProvider, map);
+        locationOverlay = new MyLocationNewOverlay(locationProvider, map);
         locationOverlay.setDrawAccuracyEnabled(false);
 
-        map.getOverlays().add(locationOverlay);
+
         map.getOverlays().addAll(Point.getAllPoints());
+        map.getOverlays().add(locationOverlay);
         map.invalidate();
 
         map.getController().setZoom(15.0);
@@ -93,7 +95,9 @@ public class MainActivity extends Activity {
             map.getController().setCenter(new GeoPoint(lat, lon));
             map.getController().setZoom(20.0);
         }
+        map.getOverlays().clear();
         map.getOverlays().addAll(Point.getAllPoints());
+        map.getOverlays().add(locationOverlay);
         map.invalidate();
     }
 

@@ -39,15 +39,14 @@ public class Point extends Marker {
             super.setIcon(resize(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.visited)));
         } else {
             super.setIcon(resize(MainActivity.instance.getApplicationContext().getDrawable(R.drawable.notvisited)));
+
+            List<GeoPoint> circle = Polygon.pointsAsCircle(this.getPosition(), MainActivity.maxDistance);
+            Polygon p = new Polygon(MainActivity.map);
+            p.setInfoWindow(null);
+            p.setPoints(circle);
+            MainActivity.map.getOverlayManager().add(p);
         }
         super.setAnchor(0.176f, 0.176f);
-
-        List<GeoPoint> circle = Polygon.pointsAsCircle(this.getPosition(), MainActivity.maxDistance);
-        Polygon p = new Polygon(MainActivity.map);
-        p.setInfoWindow(null);
-        p.setPoints(circle);
-        MainActivity.map.getOverlayManager().add(p);
-
     }
 
     private Drawable resize(Drawable image) {
