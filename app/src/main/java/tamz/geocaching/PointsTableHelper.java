@@ -186,4 +186,9 @@ public class PointsTableHelper extends SQLiteOpenHelper {
 
         return new Point(latitude, longitude, name, desc, color, visited, photo);
     }
+
+    public void clearDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_NAME, "", null);
+    }
 }

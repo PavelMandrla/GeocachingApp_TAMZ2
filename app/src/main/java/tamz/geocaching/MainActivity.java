@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -52,6 +51,7 @@ public class MainActivity extends Activity {
 
         instance = this;
 
+        //PointsTableHelper.getInstance().clearDB();
         checkPermissions();
 
         locationProvider = new GpsMyLocationProvider(ctx);

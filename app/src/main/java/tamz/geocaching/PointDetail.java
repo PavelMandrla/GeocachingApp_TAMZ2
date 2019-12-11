@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class PointDetail extends Activity {
     TextView name;
     TextView coordinates;
     TextView description;
+    Button markAsVisitedButton;
 
     Point point;
 
@@ -33,6 +35,7 @@ public class PointDetail extends Activity {
         name = findViewById(R.id.pointDetail_name);
         coordinates = findViewById(R.id.pointDetail_coordinates);
         description = findViewById(R.id.pointDetail_description);
+        markAsVisitedButton = findViewById(R.id.pointDetail_markAsVisitedButton);
 
         Intent intent = getIntent();
         this.point = Point.getPointByCoordinates(intent.getDoubleExtra("latitude", 500), intent.getDoubleExtra("longitude", 500));
@@ -43,34 +46,37 @@ public class PointDetail extends Activity {
         coordinates.setText(point.getCoordinatesString());
         description.setText(point.getDescription());
         status.setImageResource(point.isVisited() ? R.drawable.success_border : R.drawable.cancel_border);
+        if (point.isVisited()) {
+            markAsVisitedButton.setVisibility(View.GONE);
+        }
         if (!point.getPhotoURL().equals("")) {
             Picasso.get().load(point.getPhotoURL()).into(image);
         }
 
-        status.setOnLongClickListener(new View.OnLongClickListener() {
+        markAsVisitedButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 if (point.isVisited()) {
                     playSound(R.raw.decline);
                     vibrate(500);
-                    return false;
+                    return;
                 }
                 Location last = MainActivity.instance.getLocation();
                 if (last == null) {
                     playSound(R.raw.decline);
                     vibrate(500);
-                    return false;
+                    return;
                 }
                 if (point.haversine(last.getLatitude(), last.getLongitude()) > MainActivity.maxDistance) {
                     playSound(R.raw.decline);
                     vibrate(500);
-                    return false;
+                    return;
                 }
                 playSound(R.raw.accept);
                 status.setImageResource(R.drawable.success_border);
                 point.markAsVisited();
-
-                return true;
+                markAsVisitedButton.setVisibility(View.GONE);
+                return;
             }
         });
     }
